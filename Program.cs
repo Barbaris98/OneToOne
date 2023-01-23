@@ -26,7 +26,7 @@ namespace OneToOne
                 db.SaveChanges();
             }
 
-
+            //получение данных
             using (ApplicationContext db = new ApplicationContext())
             {
                 foreach (User user in db.Users.Include(u => u.Profile).ToList())
@@ -35,6 +35,92 @@ namespace OneToOne
                     Console.WriteLine($"Login: {user.Login}  Password: {user.Password} \n");
                 }
             }
+
+            Console.WriteLine("1 - редактирование,  2 - удаление, 0 - пропуск");
+            int? a = Convert.ToInt32(Console.ReadLine());
+
+            if (a != null)
+            {
+                if (Convert.ToBoolean(a == 1))
+                {
+                    using (ApplicationContext db = new ApplicationContext())
+                    {
+                        User? user = db.Users.FirstOrDefault();
+                        // получаем первый объект User
+                        if (user != null)
+                        {
+                            user.Password = "dsfvbggg";
+                            db.SaveChanges();
+                        }
+
+                        // получаем объект UserProfile для пользователя с логином "login2"
+                        UserProfile? profile = db.UserProfiles.FirstOrDefault(p => p.User.Login == "login2");
+                        if (profile != null)
+                        {
+                            profile.Name = "Alice II";
+                            db.SaveChanges();
+                        }
+                    }
+
+                    Console.WriteLine("Получение отред. данных");
+
+                    using (ApplicationContext db = new ApplicationContext())
+                    {
+                        foreach (User user in db.Users.Include(u => u.Profile).ToList())
+                        {
+                            Console.WriteLine($"Name: {user.Profile?.Name} Age: {user.Profile?.Age}");
+                            Console.WriteLine($"Login: {user.Login}  Password: {user.Password} \n");
+                        }
+                    }
+
+                }
+
+                if (Convert.ToBoolean(a == 2))
+                {
+                    using (ApplicationContext db = new ApplicationContext())
+                    {
+                        // удаляем первый объект User
+                        User? user = db.Users.FirstOrDefault();
+                        if (user != null)
+                        {
+                            db.Users.Remove(user);
+                            db.SaveChanges();
+                        }
+
+                        // удаляем объект UserProfile c логином login2
+                        UserProfile? profile = db.UserProfiles.FirstOrDefault(p => p.User.Login == "login2");
+                        if (profile != null)
+                        {
+                            db.UserProfiles.Remove(profile);
+                            db.SaveChanges();
+                        }
+                    }
+
+                    Console.WriteLine("Получение удалённых. данных");
+
+                    using (ApplicationContext db = new ApplicationContext())
+                    {
+                        foreach (User user in db.Users.Include(u => u.Profile).ToList())
+                        {
+                            Console.WriteLine($"Name: {user.Profile?.Name} Age: {user.Profile?.Age}");
+                            Console.WriteLine($"Login: {user.Login}  Password: {user.Password} \n");
+                        }
+                    }
+                }
+
+                if (Convert.ToBoolean(a == 0))
+                {
+                    
+                    Console.WriteLine("Финиш");
+
+
+                }
+
+
+
+
+            }
+
 
 
 
