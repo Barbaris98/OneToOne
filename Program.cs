@@ -1,6 +1,8 @@
 ﻿
 
 
+using Microsoft.EntityFrameworkCore;
+
 namespace OneToOne
 {
     internal class Program
@@ -22,6 +24,16 @@ namespace OneToOne
                 db.UserProfiles.AddRange(profile1, profile2);
 
                 db.SaveChanges();
+            }
+
+
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                foreach (User user in db.Users.Include(u => u.Profile).ToList())
+                {
+                    Console.WriteLine($"Name: {user.Profile?.Name} Age: {user.Profile?.Age}");
+                    Console.WriteLine($"Login: {user.Login}  Password: {user.Password} \n");
+                }
             }
 
 
